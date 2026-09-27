@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Property Card — Lead Row · Profit Drive</title>
+<style>
+  :root {
+    /* ---- Primitives (from design-system/tokens.json) ---- */
+    --white: #FFFFFF;
+    --neutral_50:  #F7F7F7;
+    --neutral_100: #F2F2F2;
+    --neutral_200: #E0E0E0;
+    --neutral_400: #B0B0B0;
+    --neutral_600: #717171;
+    --near_black:  #222222;
+    --red_600: #E96A6A;
+    --red_700: #D83131;
+    --red_800: #9D2525;
+    --tomato_red: #D93025;
+
+    /* ---- Semantic ---- */
+    --brand:       var(--red_600);
+    --brand-hover: var(--red_700);
+    --text:        var(--near_black);
+    --text-muted:  var(--neutral_600);
+    --text-soft:   var(--neutral_400);
+    --canvas:      var(--white);
+    --outline:     var(--neutral_200);
+    --outline-soft:var(--neutral_100);
+
+    /* ---- Spacing ---- */
+    --spc_4:  4px;
+    --spc_8:  8px;
+    --spc_12: 12px;
+    --spc_16: 16px;
+    --spc_20: 20px;
+    --spc_24: 24px;
+    --spc_32: 32px;
+
+    /* ---- Radii ---- */
+    --radius_sm:   8px;
+    --radius_md:  12px;
+    --radius_lg:  16px;
+    --radius_xl:  20px;
+    --radius_2xl: 24px;
+    --radius_pill: 99px;
+
+    /* ---- Type scale ---- */
+    --sans: Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --size_11: 11px;
+    --size_12: 12px;
+    --size_14: 14px;
+    --size_16: 16px;
+    --size_18: 18px;
+    --size_20: 20px;
+    --size_24: 24px;
+    --w_regular: 400;
+    --w_medium: 500;
+    --w_semibold: 600;
+    --w_bold: 700;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--neutral_50);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.4;
+    padding: var(--spc_32);
+  }
+
+  .page-head {
+    max-width: 760px;
+    margin: 0 auto var(--spc_24);
+  }
+  .page-head h1 {
+    font-size: var(--size_20);
+    font-weight: var(--w_semibold);
+    margin: 0 0 var(--spc_4);
+    letter-spacing: -0.01em;
+  }
+  .page-head p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--size_14);
+  }
+
+  .stack {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spc_16);
+  }
+
+  /* ==================== Property Card — Lead Row ==================== */
+  .plead {
+    background: var(--canvas);
+    border: 1px solid var(--outline-soft);
+    border-radius: var(--radius_2xl);
+    padding: var(--spc_16) var(--spc_20);
+    display: grid;
+    grid-template-columns: 108px 1fr auto;
+    align-items: center;
+    gap: var(--spc_20);
+    box-shadow: 0 1px 2px rgba(34,34,34,0.04);
+    transition: box-shadow 160ms ease, border-color 160ms ease;
+    cursor: pointer;
+  }
+  .plead:hover {
+    box-shadow: 0 6px 20px rgba(34,34,34,0.08);
+    border-color: var(--outline);
+  }
+  .plead:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* ---- Media (small square photo + selected badge) ---- */
+  .plead-media {
+    position: relative;
+    width: 108px;
+    height: 108px;
+    border-radius: var(--radius_lg);
+    overflow: hidden;
+    background: var(--neutral_100);
+    flex-shrink: 0;
+  }
+  .plead-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .plead-badge {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 3px var(--canvas);
+    transition: background 120ms ease;
+  }
+  .plead-badge svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Unselected variant */
+  .plead[data-selected="false"] .plead-badge {
+    background: var(--white);
+    color: var(--neutral_400);
+    box-shadow: 0 0 0 3px var(--canvas), inset 0 0 0 1.5px var(--outline);
+  }
+  .plead[data-selected="false"] .plead-badge svg { display: none; }
+
+  /* ---- Body ---- */
+  .plead-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spc_8);
+    min-width: 0; /* enable text truncation inside */
+  }
+
+  .plead-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spc_8);
+  }
+  .plead-price {
+    font-size: var(--size_24);
+    font-weight: var(--w_bold);
+    color: var(--brand);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .plead-price-label {
+    font-size: var(--size_14);
+    color: var(--text-muted);
+    font-weight: var(--w_regular);
+  }
+
+  .plead-address {
+    font-size: var(--size_18);
+    font-weight: var(--w_semibold);
+    color: var(--text);
+    line-height: 1.3;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+
+  .plead-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spc_12);
+    font-size: var(--size_14);
+    color: var(--text-muted);
+    margin-top: var(--spc_4);
+  }
+  .plead-stats .stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .plead-stats .stat-value {
+    color: var(--text);
+    font-weight: var(--w_semibold);
+  }
+  .plead-stats .divider {
+    width: 1px;
+    height: 14px;
+    background: var(--outline);
+    align-self: center;
+  }
+
+  .plead-owner {
+    display: flex;
+    align-items: center;
+    gap: var(--spc_8);
+    font-size: var(--size_14);
+    color: var(--text-muted);
+    margin-top: var(--spc_8);
+    padding-top: var(--spc_12);
+    border-top: 1px solid var(--outline-soft);
+    flex-wrap: wrap;
+  }
+  .plead-owner-label { color: var(--text-muted); }
+  .plead-owner-name {
+    color: var(--text);
+    font-weight: var(--w_semibold);
+  }
+  .plead-owner-phone {
+    color: var(--text-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .plead-owner-phone:hover {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+
+  /* ---- Chevron affordance ---- */
+  .plead-chevron {
+    color: var(--text-soft);
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spc_4);
+    transition: color 120ms ease, transform 120ms ease;
+  }
+  .plead:hover .plead-chevron {
+    color: var(--text);
+    transform: translateX(2px);
+  }
+  .plead-chevron svg {
+    width: 20px; height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 520px) {
+    .plead { grid-template-columns: 88px 1fr auto; gap: var(--spc_16); padding: var(--spc_12); }
+    .plead-media { width: 88px; height: 88px; }
+    .plead-price { font-size: var(--size_20); }
+    .plead-address { font-size: var(--size_16); }
+    .plead-owner { font-size: var(--size_12); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Property Card — Lead Row</h1>
+  <p>Horizontal scouted-property row. Small photo + coral selection badge, brand-color est. value, full address as title, stats row with dividers, owner name + phone footer, chevron for detail.</p>
+</div>
+
+<div class="stack">
+
+  <!-- ============================================================ -->
+  <!-- CARD 1 — Selected (default)                                  -->
+  <!-- ============================================================ -->
+  <article class="plead" data-selected="true" tabindex="0" aria-label="2720 Black Cherry, OFallon, MO 63368. Est. value $1,164,000. Confirmed lead.">
+    <div class="plead-media">
+      <img
+        src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=400&q=70"
+        alt="Two-story home with covered porch"
+        onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#F2F2F2,#E0E0E0)'"
+      />
+      <span class="plead-badge" aria-label="Confirmed">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7.5"/></svg>
+      </span>
+    </div>
+
+    <div class="plead-body">
+      <div class="plead-price-row">
+        <span class="plead-price">$1,164,000</span>
+        <span class="plead-price-label">Est. Value</span>
+      </div>
+      <h2 class="plead-address">2720 Black Cherry OFallon, MO 63368</h2>
+      <div class="plead-stats">
+        <span class="stat"><span class="stat-value">3</span> Bds</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">4</span> Ba</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">3,123</span> sqft</span>
+      </div>
+      <div class="plead-owner">
+        <span class="plead-owner-label">Owned By:</span>
+        <span class="plead-owner-name">Ann B Hadley</span>
+        <a class="plead-owner-phone" href="tel:+16698789978">(669) 878 9978</a>
+      </div>
+    </div>
+
+    <span class="plead-chevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+    </span>
+  </article>
+
+  <!-- ============================================================ -->
+  <!-- CARD 2 — Unselected (empty state of the badge)               -->
+  <!-- ============================================================ -->
+  <article class="plead" data-selected="false" tabindex="0" aria-label="88 Cypress Ave, Austin, TX 78702. Est. value $412,000. Not yet added.">
+    <div class="plead-media">
+      <img
+        src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=70"
+        alt="Small bungalow with peeling paint"
+        onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#F2F2F2,#E0E0E0)'"
+      />
+      <span class="plead-badge" aria-label="Not added">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7.5"/></svg>
+      </span>
+    </div>
+
+    <div class="plead-body">
+      <div class="plead-price-row">
+        <span class="plead-price">$412,000</span>
+        <span class="plead-price-label">Est. Value</span>
+      </div>
+      <h2 class="plead-address">88 Cypress Ave Austin, TX 78702</h2>
+      <div class="plead-stats">
+        <span class="stat"><span class="stat-value">2</span> Bds</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">1</span> Ba</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">980</span> sqft</span>
+      </div>
+      <div class="plead-owner">
+        <span class="plead-owner-label">Owned By:</span>
+        <span class="plead-owner-name">Marcus Vela</span>
+        <a class="plead-owner-phone" href="tel:+15125550142">(512) 555 0142</a>
+      </div>
+    </div>
+
+    <span class="plead-chevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+    </span>
+  </article>
+
+  <!-- ============================================================ -->
+  <!-- CARD 3 — Selected, no phone on file                          -->
+  <!-- ============================================================ -->
+  <article class="plead" data-selected="true" tabindex="0" aria-label="502 Riverside Dr, Miami, FL 33101. Est. value $675,500. Confirmed lead.">
+    <div class="plead-media">
+      <img
+        src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=70"
+        alt="Older single-story home"
+        onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#F2F2F2,#E0E0E0)'"
+      />
+      <span class="plead-badge" aria-label="Confirmed">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7.5"/></svg>
+      </span>
+    </div>
+
+    <div class="plead-body">
+      <div class="plead-price-row">
+        <span class="plead-price">$675,500</span>
+        <span class="plead-price-label">Est. Value</span>
+      </div>
+      <h2 class="plead-address">502 Riverside Dr Miami, FL 33101</h2>
+      <div class="plead-stats">
+        <span class="stat"><span class="stat-value">4</span> Bds</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">2</span> Ba</span>
+        <span class="divider"></span>
+        <span class="stat"><span class="stat-value">1,820</span> sqft</span>
+      </div>
+      <div class="plead-owner">
+        <span class="plead-owner-label">Owned By:</span>
+        <span class="plead-owner-name">R. Okafor</span>
+        <span class="plead-owner-phone">No phone on file</span>
+      </div>
+    </div>
+
+    <span class="plead-chevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+    </span>
+  </article>
+
+</div>
+
+</body>
+</html>
