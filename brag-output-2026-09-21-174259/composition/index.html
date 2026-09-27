@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profit Drive — Brag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=block">
+<style>
+  :root{
+    --canvas:#FAFAF7;
+    --canvas-2:#F4F2ED;
+    --ink:#111111;
+    --ink-2:#2a2a2a;
+    --muted:#6b6b6b;
+    --soft:#a5a5a5;
+    --hair:#EAE7DF;
+    --line:#DEDBD1;
+
+    --coral:#E96A6A;
+    --coral-ink:#B84040;
+    --coral-tint:#FFF3F1;
+    --coral-tint-2:#FFE6E2;
+
+    --green:#1F7A44;
+    --amber:#C79219;
+    --tomato:#C22B22;
+
+    --sans:'Geist',-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+    --mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;background:var(--canvas);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden;font-feature-settings:"ss01","cv11"}
+
+  #root{position:relative;width:1920px;height:1080px;background:var(--canvas);overflow:hidden}
+
+  /* Subtle canvas grain */
+  #root::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:100;
+    background-image:radial-gradient(rgba(0,0,0,.018) 1px, transparent 1px);
+    background-size:3px 3px;mix-blend-mode:multiply;opacity:.6}
+
+  .scene, .clip.scene{position:absolute;inset:0;width:1920px;height:1080px;opacity:0;display:flex;align-items:center;justify-content:center}
+
+  /* Shared micro-label */
+  .micro{font-size:14px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+  .micro .num{color:var(--coral);margin-right:12px;font-variant-numeric:tabular-nums;font-family:var(--mono);font-weight:500}
+
+  /* ---------- SCENE 1: HOOK ---------- */
+  .s1{background:var(--canvas)}
+  .s1-halo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1400px;height:1400px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(233,106,106,0.14),rgba(233,106,106,0.03) 50%,rgba(255,255,255,0) 72%);
+    opacity:0;filter:blur(6px)}
+  .s1-stack{position:relative;text-align:center;opacity:0}
+  .s1-mark{font-weight:600;font-size:196px;letter-spacing:-0.055em;color:var(--ink);line-height:0.95;font-feature-settings:"ss01"}
+  .s1-mark .accent{color:var(--coral)}
+  .s1-rule{margin:44px auto 0;height:2px;width:0;background:var(--coral);border-radius:2px}
+  .s1-tag{margin-top:34px;font-weight:400;font-size:30px;color:var(--muted);letter-spacing:0.005em;opacity:0}
+
+  /* ---------- SCENE 2: HOME REVEAL ---------- */
+  .s2{background:var(--canvas)}
+  .s2-frame{position:relative;display:flex;gap:120px;align-items:center;justify-content:center;padding:0 120px;opacity:0;width:100%}
+  .s2-copy{width:600px}
+  .s2-h1{margin-top:24px;font-size:82px;line-height:1.02;letter-spacing:-0.035em;font-weight:600;color:var(--ink);opacity:0}
+  .s2-h1 b{color:var(--coral);font-weight:600}
+  .s2-sub{margin-top:26px;font-size:22px;line-height:1.5;color:var(--muted);font-weight:400;max-width:520px;opacity:0;letter-spacing:0.005em}
+
+  /* Phone */
+  .phone{width:440px;height:900px;border-radius:60px;background:#0a0a0a;padding:12px;box-shadow:0 60px 100px rgba(17,17,17,.10),0 20px 40px rgba(17,17,17,.06),0 4px 12px rgba(17,17,17,.04)}
+  .phone-inner{position:relative;width:100%;height:100%;border-radius:50px;background:var(--canvas);overflow:hidden}
+  .phone-notch{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:#0a0a0a;border-radius:99px;z-index:5}
+  .phone-status{position:absolute;top:0;left:0;right:0;height:48px;display:flex;justify-content:space-between;align-items:center;padding:18px 34px 0;font-size:13px;font-weight:500;color:var(--ink);z-index:4;font-family:var(--sans);letter-spacing:-0.01em}
+  .phone-status .sig{width:20px;height:10px;background:linear-gradient(90deg,var(--ink) 0 65%,rgba(17,17,17,.2) 65%);border-radius:2px}
+
+  .scr{position:absolute;inset:48px 0 0 0;padding:28px 26px 26px;display:flex;flex-direction:column;gap:16px;background:var(--canvas)}
+  .zip{display:inline-flex;align-items:center;gap:8px;background:var(--canvas-2);color:var(--muted);padding:8px 14px;border-radius:99px;font-size:12px;font-weight:500;align-self:flex-start;letter-spacing:0.02em}
+  .zip .pin{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+  .hi{font-size:26px;font-weight:600;letter-spacing:-0.025em;line-height:1.2;color:var(--ink)}
+  .hi b{color:var(--coral);font-weight:600}
+
+  .callout{margin-top:6px;background:#fff;border:1px solid var(--hair);border-radius:20px;padding:20px 22px;display:flex;align-items:center;gap:18px;opacity:0;box-shadow:0 4px 16px rgba(17,17,17,.03)}
+  .callout-num{font-family:var(--mono);font-size:54px;font-weight:500;color:var(--coral);letter-spacing:-0.04em;line-height:1;font-variant-numeric:tabular-nums;min-width:72px;text-align:right}
+  .callout-body{display:flex;flex-direction:column;gap:4px}
+  .callout-title{font-size:14px;color:var(--ink);font-weight:500;letter-spacing:-0.005em}
+  .callout-sub{font-size:12px;color:var(--muted);letter-spacing:0.01em}
+
+  .recap{margin-top:2px;display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);opacity:0;letter-spacing:0.01em}
+  .recap .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .recap b{color:var(--ink);font-weight:600}
+
+  /* Refined map — grid + subtle pins */
+  .fmap{margin-top:6px;flex:1;border-radius:20px;background:var(--canvas-2);position:relative;overflow:hidden;border:1px solid var(--hair)}
+  .fmap::before{content:"";position:absolute;inset:0;background-image:
+    linear-gradient(0deg,transparent calc(100% - 1px),rgba(17,17,17,.05) calc(100% - 1px)),
+    linear-gradient(90deg,transparent calc(100% - 1px),rgba(17,17,17,.05) calc(100% - 1px));
+    background-size:44px 44px;opacity:1}
+  .fmap::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(circle at 30% 34%, var(--coral) 0 5px, transparent 6px),
+    radial-gradient(circle at 62% 26%, var(--coral) 0 5px, transparent 6px),
+    radial-gradient(circle at 46% 62%, var(--amber) 0 5px, transparent 6px),
+    radial-gradient(circle at 72% 68%, var(--coral) 0 5px, transparent 6px),
+    radial-gradient(circle at 22% 74%, var(--soft) 0 4px, transparent 5px);
+    opacity:.85}
+  .zone-chip{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;font-size:12px;font-weight:500;letter-spacing:0.01em;box-shadow:0 8px 24px rgba(17,17,17,.24);z-index:3}
+
+  /* ---------- SCENE 3: GRADED PROPERTIES ---------- */
+  .s3{background:var(--canvas)}
+  .s3-wrap{display:flex;gap:120px;align-items:center;justify-content:center;padding:0 120px;opacity:0;width:100%}
+  .s3-copy{width:520px}
+  .s3-h1{margin-top:22px;font-size:62px;line-height:1.02;letter-spacing:-0.035em;font-weight:600;color:var(--ink)}
+  .s3-h1 em{font-style:normal;color:var(--coral)}
+  .s3-sub{margin-top:20px;font-size:20px;color:var(--muted);line-height:1.55;letter-spacing:0.005em;max-width:460px}
+  .grade-legend{display:flex;gap:22px;margin-top:32px;flex-wrap:wrap}
+  .glg{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);letter-spacing:0.01em}
+  .glg .lb{width:24px;height:24px;border-radius:6px;color:#fff;font-family:var(--mono);font-weight:500;font-size:13px;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0}
+  .lb.a{background:var(--green)} .lb.b{background:var(--amber);color:#fff} .lb.c{background:var(--tomato)} .lb.d{background:var(--muted)}
+
+  .plist{width:640px;background:#fff;border:1px solid var(--hair);border-radius:24px;padding:26px 26px 12px;box-shadow:0 32px 64px rgba(17,17,17,.06),0 8px 24px rgba(17,17,17,.04)}
+  .plist-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 18px;border-bottom:1px solid var(--hair)}
+  .plist-title{font-size:20px;font-weight:600;color:var(--ink);letter-spacing:-0.02em}
+  .plist-sub{font-size:12px;color:var(--muted);letter-spacing:0.01em;font-family:var(--mono);font-weight:400}
+  .prow{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid var(--hair);opacity:0}
+  .prow:last-child{border-bottom:none}
+  .pthumb{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#E5DFD0,#CDC3AC);position:relative;overflow:hidden}
+  .pthumb::before{content:"";position:absolute;left:12px;bottom:0;width:40px;height:34px;background:#7d6f57;clip-path:polygon(0 40%, 50% 0, 100% 40%, 100% 100%, 0 100%)}
+  .pthumb::after{content:"";position:absolute;left:22px;bottom:8px;width:12px;height:14px;background:#332a1e}
+  .paddr{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-0.015em}
+  .pmeta{font-size:13px;color:var(--muted);margin-top:3px;letter-spacing:0.005em}
+  .gbadge{width:40px;height:40px;border-radius:12px;color:#fff;font-family:var(--mono);font-weight:500;font-size:18px;display:inline-flex;align-items:center;justify-content:center;opacity:0}
+  .gbadge.a{background:var(--green)} .gbadge.b{background:var(--amber);color:#fff} .gbadge.c{background:var(--tomato)} .gbadge.d{background:var(--muted)}
+
+  /* ---------- SCENE 4: DRIVE ---------- */
+  .s4{background:#EEEBE1}
+  .drive-map{position:absolute;inset:0;background:linear-gradient(180deg,#F0EDE3,#E6E2D6);opacity:0}
+  .drive-map::before{content:"";position:absolute;inset:0;background-image:
+    linear-gradient(0deg,transparent calc(100% - 1px),rgba(17,17,17,.04) calc(100% - 1px)),
+    linear-gradient(90deg,transparent calc(100% - 1px),rgba(17,17,17,.04) calc(100% - 1px));
+    background-size:96px 96px;opacity:.8}
+  .drive-map::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%, rgba(17,17,17,.08), transparent 60%);pointer-events:none}
+  .route{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;opacity:0}
+
+  .toast{position:absolute;top:96px;left:50%;background:#fff;color:var(--ink);padding:16px 22px;border-radius:99px;font-size:18px;font-weight:500;letter-spacing:-0.005em;box-shadow:0 24px 60px rgba(17,17,17,.14),0 4px 12px rgba(17,17,17,.06);display:inline-flex;align-items:center;gap:14px;opacity:0;border:1px solid var(--hair)}
+  .toast .ck{width:24px;height:24px;border-radius:50%;background:var(--coral);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+
+  .sheet{position:absolute;left:50%;bottom:64px;width:960px;background:#fff;border-radius:32px;padding:32px 36px 30px;box-shadow:0 40px 80px rgba(17,17,17,.14),0 8px 24px rgba(17,17,17,.06);opacity:0;border:1px solid var(--hair)}
+  .sheet-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;font-weight:500;letter-spacing:0.02em}
+  .sheet-status{display:inline-flex;align-items:center;gap:10px;color:var(--ink)}
+  .sheet-status .d{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(31,122,68,.16)}
+  .sheet-tick{font-family:var(--mono);color:var(--soft);letter-spacing:0.02em}
+  .sheet-prog{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;color:var(--muted);font-size:12px;letter-spacing:0.02em;text-transform:uppercase}
+  .sheet-prog b{color:var(--ink);font-size:16px;font-variant-numeric:tabular-nums;font-family:var(--mono);font-weight:500;letter-spacing:-0.02em;text-transform:none}
+  .progbar{margin-top:8px;height:4px;background:var(--hair);border-radius:99px;overflow:hidden}
+  .progfill{height:100%;background:var(--coral);width:8%}
+
+  .next-label{margin-top:20px;color:var(--muted);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .next-card{margin-top:8px;display:grid;grid-template-columns:96px 1fr auto;gap:20px;align-items:center;padding:14px 6px 4px}
+  .next-thumb{width:96px;height:96px;border-radius:16px;background:linear-gradient(135deg,#E5DFD0,#CDC3AC);position:relative;overflow:hidden}
+  .next-thumb::before{content:"";position:absolute;left:16px;bottom:0;width:64px;height:52px;background:#7d6f57;clip-path:polygon(0 40%, 50% 0, 100% 40%, 100% 100%, 0 100%)}
+  .next-thumb::after{content:"";position:absolute;left:32px;bottom:12px;width:20px;height:22px;background:#332a1e}
+  .next-addr{font-size:26px;font-weight:600;color:var(--ink);letter-spacing:-0.025em}
+  .next-meta{font-size:15px;color:var(--muted);margin-top:3px;letter-spacing:0.005em}
+  .next-cta{background:var(--coral);color:#fff;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 6px 18px rgba(233,106,106,.28);letter-spacing:0.005em}
+
+  /* Voice orb */
+  .orb{position:absolute;left:50%;bottom:320px;width:110px;height:110px;opacity:0}
+  .orb .core{position:absolute;inset:38px;border-radius:50%;background:var(--coral);box-shadow:0 8px 24px rgba(233,106,106,.35)}
+  .orb .r1{position:absolute;inset:20px;border-radius:50%;border:2px solid rgba(233,106,106,.45)}
+  .orb .r2{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(233,106,106,.22)}
+
+  /* ---------- SCENE 5: STAT ---------- */
+  .s5{background:var(--canvas)}
+  .s5-stack{text-align:center;position:relative}
+  .s5-eyebrow{margin-bottom:36px;opacity:0}
+  .s5-num{font-family:var(--mono);font-size:360px;font-weight:500;color:var(--ink);letter-spacing:-0.06em;line-height:0.85;opacity:0}
+  .s5-num .x{color:var(--coral);font-weight:400}
+  .s5-cap{margin-top:32px;font-size:34px;color:var(--ink);font-weight:400;letter-spacing:-0.015em;opacity:0;max-width:900px;margin-left:auto;margin-right:auto}
+  .s5-cap b{color:var(--ink);font-weight:600}
+  .s5-tiny{margin-top:22px;font-size:14px;color:var(--muted);opacity:0;letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+
+  /* ---------- SCENE 6: OUTRO ---------- */
+  .s6{background:var(--canvas)}
+  .s6-stack{position:relative;text-align:center}
+  .s6-mark{font-weight:600;font-size:176px;letter-spacing:-0.055em;color:var(--ink);line-height:0.95;opacity:0;font-feature-settings:"ss01"}
+  .s6-mark .accent{color:var(--coral)}
+  .s6-underline{margin:32px auto 0;height:2px;width:0;background:var(--coral);border-radius:2px}
+  .s6-tag{margin-top:34px;font-size:28px;font-weight:400;color:var(--muted);letter-spacing:0;opacity:0}
+  .s6-foot{margin-top:64px;font-size:12px;color:var(--soft);opacity:0;letter-spacing:0.28em;text-transform:uppercase;font-weight:500}
+</style>
+</head>
+<body>
+
+<div id="root" data-composition-id="root" data-width="1920" data-height="1080">
+
+  <!-- ===== SCENE 1: HOOK ===== -->
+  <div class="scene clip s1" data-start="0" data-duration="3.5">
+    <div class="s1-halo"></div>
+    <div class="s1-stack">
+      <div class="s1-mark">Profit <span class="accent">Drive</span></div>
+      <div class="s1-rule" id="s1rule"></div>
+      <div class="s1-tag">A field partner in your passenger seat.</div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 2: HOME REVEAL ===== -->
+  <div class="scene clip s2" data-start="3.5" data-duration="4.0">
+    <div class="s2-frame">
+      <div class="s2-copy">
+        <div class="micro"><span class="num">01</span>The morning brief</div>
+        <div class="s2-h1">Your zip, <b>pre-scouted</b> overnight.</div>
+        <div class="s2-sub">The agent reads listings, satellite passes, and tax cues while you sleep — then hands you a shortlist worth the drive.</div>
+      </div>
+      <div class="phone">
+        <div class="phone-inner">
+          <div class="phone-notch"></div>
+          <div class="phone-status"><span>9:41</span><span class="sig"></span></div>
+          <div class="scr">
+            <div class="zip"><span class="pin"></span>Zip · 78701</div>
+            <div class="hi">Morning, <b>Joe</b> — welcome to your territory.</div>
+            <div class="callout">
+              <div class="callout-num" id="calnum">0</div>
+              <div class="callout-body">
+                <div class="callout-title">new leads scouted</div>
+                <div class="callout-sub">Ready when you are.</div>
+              </div>
+            </div>
+            <div class="recap"><span class="dot"></span><span><b>3 leads</b> won last drive · 2 hrs</span></div>
+            <div class="fmap">
+              <span class="zone-chip">Oak Valley · 6 properties</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 3: GRADED PROPERTIES ===== -->
+  <div class="scene clip s3" data-start="7.5" data-duration="4.0">
+    <div class="s3-wrap">
+      <div class="s3-copy">
+        <div class="micro"><span class="num">02</span>Distress, graded</div>
+        <div class="s3-h1">Every property<br>rated <em>A → D</em><br>before you drive.</div>
+        <div class="s3-sub">Signals stack into a single score, so you know which turns are worth taking.</div>
+        <div class="grade-legend">
+          <span class="glg"><span class="lb a">A</span>Hot lead</span>
+          <span class="glg"><span class="lb b">B</span>Warm</span>
+          <span class="glg"><span class="lb c">C</span>Watch</span>
+          <span class="glg"><span class="lb d">D</span>Skip</span>
+        </div>
+      </div>
+      <div class="plist">
+        <div class="plist-head">
+          <div class="plist-title">Oak Valley</div>
+          <div class="plist-sub">6 scouted · 4 shown</div>
+        </div>
+        <div class="prow" id="row1"><div class="pthumb"></div><div><div class="paddr">312 Trinity St</div><div class="pmeta">0.2 mi · quiet street</div></div><span class="gbadge a" id="g1">A</span></div>
+        <div class="prow" id="row2"><div class="pthumb"></div><div><div class="paddr">514 Red River St</div><div class="pmeta">0.4 mi · fresh paint</div></div><span class="gbadge a" id="g2">A</span></div>
+        <div class="prow" id="row3"><div class="pthumb"></div><div><div class="paddr">227 E 4th St</div><div class="pmeta">0.5 mi · owner on site</div></div><span class="gbadge b" id="g3">B</span></div>
+        <div class="prow" id="row4"><div class="pthumb"></div><div><div class="paddr">118 Neches St</div><div class="pmeta">0.7 mi · needs approach</div></div><span class="gbadge c" id="g4">C</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 4: DRIVE ===== -->
+  <div class="scene clip s4" data-start="11.5" data-duration="4.0">
+    <div class="drive-map"></div>
+    <svg class="route" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+      <path id="routepath" d="M 120 900 C 380 780, 620 820, 780 700 S 1160 500, 1340 460 S 1720 260, 1820 200"
+            stroke="#E96A6A" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 10"/>
+      <circle cx="120" cy="900" r="10" fill="#E96A6A"/>
+      <circle cx="1820" cy="200" r="12" fill="#1F7A44"/>
+    </svg>
+    <div class="toast"><span class="ck">✓</span>Saved as potential lead</div>
+    <div class="orb"><div class="r2"></div><div class="r1"></div><div class="core"></div></div>
+    <div class="sheet">
+      <div class="sheet-head">
+        <div class="sheet-status"><span class="d"></span>En route · voice-first</div>
+        <div class="sheet-tick">STOP 03 / 12</div>
+      </div>
+      <div class="sheet-prog"><span>Route progress</span><span><b id="progIdx">1</b> of 12 stops</span></div>
+      <div class="progbar"><div class="progfill" id="progfill"></div></div>
+      <div class="next-label">Approaching</div>
+      <div class="next-card">
+        <div class="next-thumb"></div>
+        <div>
+          <div class="next-addr">312 Trinity St</div>
+          <div class="next-meta">Grade A · quiet street · 0.2 mi</div>
+        </div>
+        <div class="next-cta">Confirm as lead</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 5: STAT ===== -->
+  <div class="scene clip s5" data-start="15.5" data-duration="3.0">
+    <div class="s5-stack">
+      <div class="s5-eyebrow micro"><span class="num">03</span>The result</div>
+      <div class="s5-num">3<span class="x">×</span></div>
+      <div class="s5-cap"><b>more qualified leads</b> per drive.</div>
+      <div class="s5-tiny">Voice-first · A → D grading · one-tap confirm</div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 6: OUTRO ===== -->
+  <div class="scene clip s6" data-start="18.5" data-duration="3.0">
+    <div class="s6-stack">
+      <div class="s6-mark">Profit <span class="accent">Drive</span></div>
+      <div class="s6-underline" id="uline"></div>
+      <div class="s6-tag">Hands on the wheel. Leads in the bag.</div>
+      <div class="s6-foot">A field partner in the passenger seat</div>
+    </div>
+  </div>
+
+  <!-- ===== AUDIO ===== -->
+  <audio id="bgm" class="clip" data-start="0" data-duration="21.5" data-track-index="10" data-volume="1" src="assets/music/happy-beats-business-moves-vol-11-by-ende-dot-app.mp3"></audio>
+
+  <audio id="sfx-stamp" class="clip" data-start="1.55" data-duration="1.5" data-track-index="11" data-volume="0.55" src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+  <audio id="sfx-phone-land" class="clip" data-start="3.65" data-duration="0.9" data-track-index="12" data-volume="0.5" src="assets/sfx/interface/drop_002.ogg"></audio>
+  <audio id="sfx-callout" class="clip" data-start="4.20" data-duration="0.6" data-track-index="13" data-volume="0.35" src="assets/sfx/interface/click_002.ogg"></audio>
+  <audio id="sfx-row-1" class="clip" data-start="7.85" data-duration="0.7" data-track-index="14" data-volume="0.45" src="assets/sfx/casino/card-place-1.ogg"></audio>
+  <audio id="sfx-row-2" class="clip" data-start="8.38" data-duration="0.7" data-track-index="15" data-volume="0.45" src="assets/sfx/casino/card-place-2.ogg"></audio>
+  <audio id="sfx-row-3" class="clip" data-start="8.90" data-duration="0.7" data-track-index="16" data-volume="0.45" src="assets/sfx/casino/card-place-3.ogg"></audio>
+  <audio id="sfx-row-4" class="clip" data-start="9.42" data-duration="0.7" data-track-index="17" data-volume="0.45" src="assets/sfx/casino/card-place-4.ogg"></audio>
+  <audio id="sfx-sheet" class="clip" data-start="11.55" data-duration="0.9" data-track-index="18" data-volume="0.45" src="assets/sfx/interface/drop_001.ogg"></audio>
+  <audio id="sfx-toast" class="clip" data-start="12.20" data-duration="0.6" data-track-index="19" data-volume="0.45" src="assets/sfx/interface/click_002.ogg"></audio>
+  <audio id="sfx-stat" class="clip" data-start="15.55" data-duration="2.0" data-track-index="20" data-volume="0.45" src="assets/sfx/interface/bong_001.ogg"></audio>
+  <audio id="sfx-bell" class="clip" data-start="18.55" data-duration="2.5" data-track-index="21" data-volume="0.6" src="assets/sfx/impact/impactBell_heavy_000.ogg"></audio>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+(function(){
+  // Wait until Geist has loaded so measurements are accurate
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(build);
+  } else {
+    build();
+  }
+
+  function build(){
+    // Initial GSAP transforms
+    gsap.set(".s1-tag",   { y: 14 });
+    gsap.set(".s2-frame", { y: 40 });
+    gsap.set(".s2-h1",    { y: 18 });
+    gsap.set(".s2-sub",   { y: 14 });
+    gsap.set(".callout",  { y: 12 });
+    gsap.set(".s3-wrap",  { y: 30 });
+    gsap.set(".prow",     { y: 14 });
+    gsap.set(".gbadge",   { scale: 0.7 });
+    gsap.set(".toast",    { xPercent: -50, y: -20 });
+    gsap.set(".sheet",    { xPercent: -50, y: 70 });
+    gsap.set(".orb",      { xPercent: -50, scale: 0.85 });
+    gsap.set(".s5-num",   { scale: 0.94 });
+    gsap.set(".s5-eyebrow", { y: 10 });
+    gsap.set(".s5-cap",   { y: 12 });
+    gsap.set(".s5-tiny",  { y: 8 });
+    gsap.set(".s6-mark",  { y: 12 });
+    gsap.set(".s6-tag",   { y: 10 });
+    gsap.set(".s6-foot",  { y: 8 });
+    gsap.set("#bgm",      { volume: 0.28 });
+
+    const EASE_IN  = "power3.out";
+    const EASE_INX = "power4.out";
+    const EASE_SFT = "power2.out";
+
+    const tl = gsap.timeline({ paused: true });
+
+    // ---------- SCENE 1 (0 - 3.5) ----------
+    tl.set(".s1", { opacity: 1 }, 0);
+    tl.to(".s1-halo",  { opacity: 1, duration: 1.2, ease: EASE_SFT }, 0.2);
+    tl.fromTo(".s1-stack", { scale: 0.985, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: EASE_INX }, 1.50); // beat-locked: 1.60s
+    tl.to("#s1rule",  { width: 220, duration: 0.7, ease: EASE_IN }, 1.95);
+    tl.to(".s1-tag",   { opacity: 1, y: 0, duration: 0.55, ease: EASE_IN }, 2.05);
+    tl.to(".s1",       { opacity: 0, duration: 0.45, ease: "power1.out" }, 3.05);
+
+    // ---------- SCENE 2 (3.5 - 7.5) ----------
+    tl.set(".s2", { opacity: 1 }, 3.5);
+    tl.to(".s2-frame", { opacity: 1, y: 0, duration: 0.7, ease: EASE_INX }, 3.60); // beat-locked: 3.70s
+    tl.to(".micro",    { opacity: 1, duration: 0.4, ease: EASE_SFT }, 3.85);
+    tl.to(".s2-h1",    { opacity: 1, y: 0, duration: 0.55, ease: EASE_IN }, 4.05);
+    tl.to(".s2-sub",   { opacity: 1, y: 0, duration: 0.5, ease: EASE_IN }, 4.45);
+    tl.to(".callout",  { opacity: 1, y: 0, duration: 0.5, ease: EASE_IN }, 4.30);
+    // count-up 0 -> 10 (paced, more graceful)
+    const counter = { v: 0 };
+    tl.to(counter, {
+      v: 10, duration: 1.1, ease: "power2.out",
+      onUpdate: () => { const el = document.getElementById("calnum"); if (el) el.textContent = Math.round(counter.v); }
+    }, 4.40);
+    tl.to(".recap", { opacity: 1, duration: 0.5, ease: EASE_SFT }, 5.25);
+    tl.to(".s2",  { opacity: 0, duration: 0.45, ease: "power1.out" }, 7.05);
+
+    // ---------- SCENE 3 (7.5 - 11.5) ----------
+    tl.set(".s3", { opacity: 1 }, 7.5);
+    tl.to(".s3-wrap", { opacity: 1, y: 0, duration: 0.7, ease: EASE_INX }, 7.55);
+    const rowTimes = [7.85, 8.38, 8.90, 9.42]; // beat-grid
+    const rows = ["#row1","#row2","#row3","#row4"];
+    const badges = ["#g1","#g2","#g3","#g4"];
+    rowTimes.forEach((t,i) => {
+      tl.to(rows[i], { opacity: 1, y: 0, duration: 0.45, ease: EASE_IN }, t);
+      tl.to(badges[i], { opacity: 1, scale: 1, duration: 0.38, ease: EASE_INX }, t + 0.12);
+    });
+    tl.to(".s3", { opacity: 0, duration: 0.45, ease: "power1.out" }, 11.05);
+
+    // ---------- SCENE 4 (11.5 - 15.5) ----------
+    tl.set(".s4", { opacity: 1 }, 11.5);
+    tl.to(".drive-map", { opacity: 1, duration: 0.7, ease: EASE_SFT }, 11.5);
+    tl.to(".route",     { opacity: 1, duration: 0.8, ease: EASE_SFT }, 11.9);
+    tl.to(".sheet",     { opacity: 1, y: 0, duration: 0.7, ease: EASE_INX }, 11.55);
+    tl.to(".orb",       { opacity: 1, scale: 1, duration: 0.6, ease: EASE_IN }, 11.95);
+    // orb pulse — subtler, slower
+    tl.to(".orb .r1", { scale: 1.10, opacity: 0.35, duration: 0.9, yoyo: true, repeat: 2, ease: "sine.inOut" }, 12.0);
+    tl.to(".orb .r2", { scale: 1.14, opacity: 0.15, duration: 0.9, yoyo: true, repeat: 2, ease: "sine.inOut" }, 12.05);
+    tl.to("#progfill", { width: "25%", duration: 1.2, ease: EASE_IN }, 12.4);
+    tl.call(() => { const el = document.getElementById("progIdx"); if (el) el.textContent = "3"; }, [], 13.2);
+    // Elegant toast slide + hold, no bouncy spring
+    tl.to(".toast", { opacity: 1, y: 0, duration: 0.6, ease: EASE_INX }, 12.15);
+    tl.to(".toast", { opacity: 0, y: -18, duration: 0.55, ease: "power1.inOut" }, 14.55);
+    tl.to(".s4",    { opacity: 0, duration: 0.45, ease: "power1.out" }, 15.05);
+
+    // ---------- SCENE 5 (15.5 - 18.5) ----------
+    tl.set(".s5", { opacity: 1 }, 15.5);
+    tl.to(".s5-eyebrow", { opacity: 1, y: 0, duration: 0.5, ease: EASE_IN }, 15.55);
+    tl.to(".s5-num",     { opacity: 1, scale: 1, duration: 0.9, ease: EASE_INX }, 15.75);
+    tl.to(".s5-cap",     { opacity: 1, y: 0, duration: 0.55, ease: EASE_IN }, 16.15);
+    tl.to(".s5-tiny",    { opacity: 1, y: 0, duration: 0.5, ease: EASE_SFT }, 16.55);
+    tl.to(".s5",         { opacity: 0, duration: 0.45, ease: "power1.out" }, 18.05);
+
+    // ---------- SCENE 6 (18.5 - 21.5) ----------
+    tl.set(".s6", { opacity: 1 }, 18.5);
+    tl.to(".s6-mark",  { opacity: 1, y: 0, duration: 0.7, ease: EASE_INX }, 18.55);
+    tl.to("#uline",    { width: 300, duration: 0.7, ease: EASE_IN }, 18.95);
+    tl.to(".s6-tag",   { opacity: 1, y: 0, duration: 0.55, ease: EASE_IN }, 19.25);
+    tl.to(".s6-foot",  { opacity: 1, y: 0, duration: 0.5, ease: EASE_SFT }, 19.85);
+
+    // Music duck at bell + clean cut
+    tl.to("#bgm", { volume: 0.18, duration: 0.5, ease: "power1.inOut" }, 18.3);
+    tl.to("#bgm", { volume: 0.0,  duration: 0.7, ease: "power1.inOut" }, 20.8);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["root"] = tl;
+  }
+})();
+</script>
+</body>
+</html>
