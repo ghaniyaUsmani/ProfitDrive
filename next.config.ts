@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [{ source: "/", destination: "/design-system/index.html", permanent: false }];
-  },
+  /* config options here */
 };
 
 export default nextConfig;
